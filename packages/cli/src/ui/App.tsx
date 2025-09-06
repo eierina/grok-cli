@@ -22,7 +22,7 @@ import {
   type HistoryItemWithoutId,
 } from './types.js';
 import { useTerminalSize } from './hooks/useTerminalSize.js';
-import { useGeminiStream } from './hooks/useGeminiStream.js';
+import { useGrokStream } from './hooks/useGrokStream.js';
 import { useLoadingIndicator } from './hooks/useLoadingIndicator.js';
 import { useThemeCommand } from './hooks/useThemeCommand.js';
 import { useAuthCommand } from './hooks/useAuthCommand.js';
@@ -586,7 +586,7 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
     pendingHistoryItems: pendingGeminiHistoryItems,
     thought,
     cancelOngoingRequest,
-  } = useGeminiStream(
+  } = useGrokStream(
     config.getGeminiClient(),
     history,
     addItem,

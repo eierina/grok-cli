@@ -15,7 +15,7 @@ import {
   SCREEN_READER_RESPONDING,
 } from '../textConstants.js';
 
-interface GeminiRespondingSpinnerProps {
+interface GrokRespondingSpinnerProps {
   /**
    * Optional string to display when not in Responding state.
    * If not provided and not Responding, renders null.
@@ -24,8 +24,8 @@ interface GeminiRespondingSpinnerProps {
   spinnerType?: SpinnerName;
 }
 
-export const GeminiRespondingSpinner: React.FC<
-  GeminiRespondingSpinnerProps
+export const GrokRespondingSpinner: React.FC<
+  GrokRespondingSpinnerProps
 > = ({ nonRespondingDisplay, spinnerType = 'dots' }) => {
   const streamingState = useStreamingContext();
   const isScreenReaderEnabled = useIsScreenReaderEnabled();

@@ -25,7 +25,7 @@ import {
 import type { SettingsFile, Settings } from '../config/settings.js';
 import { LoadedSettings } from '../config/settings.js';
 import process from 'node:process';
-import { useGeminiStream } from './hooks/useGeminiStream.js';
+import { useGrokStream } from './hooks/useGrokStream.js';
 import { useConsoleMessages } from './hooks/useConsoleMessages.js';
 import type { ConsoleMessageItem } from './types.js';
 import { StreamingState } from './types.js';
@@ -196,8 +196,8 @@ vi.mock('grok-cli-core', async (importOriginal) => {
 });
 
 // Mock heavy dependencies or those with side effects
-vi.mock('./hooks/useGeminiStream', () => ({
-  useGeminiStream: vi.fn(() => ({
+vi.mock('./hooks/useGrokStream', () => ({
+  useGrokStream: vi.fn(() => ({
     streamingState: 'Idle',
     submitQuery: vi.fn(),
     initError: null,
@@ -1027,7 +1027,7 @@ describe('App UI', () => {
   });
 
   it('should render correctly with the prompt input box', () => {
-    vi.mocked(useGeminiStream).mockReturnValue({
+    vi.mocked(useGrokStream).mockReturnValue({
       streamingState: StreamingState.Idle,
       submitQuery: vi.fn(),
       initError: null,
@@ -1052,7 +1052,7 @@ describe('App UI', () => {
 
       mockConfig.getQuestion = vi.fn(() => 'hello from prompt-interactive');
 
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Idle,
         submitQuery: mockSubmitQuery,
         initError: null,
@@ -1297,7 +1297,7 @@ describe('App UI', () => {
     });
 
     it('should queue messages when handleFinalSubmit is called during streaming', () => {
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Responding,
         submitQuery: mockSubmitQuery,
         initError: null,
@@ -1322,7 +1322,7 @@ describe('App UI', () => {
       const mockSubmitQueryFn = vi.fn();
 
       // Start with Responding state
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Responding,
         submitQuery: mockSubmitQueryFn,
         initError: null,
@@ -1340,7 +1340,7 @@ describe('App UI', () => {
       currentUnmount = unmount;
 
       // Simulate the hook returning Idle state (streaming completed)
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Idle,
         submitQuery: mockSubmitQueryFn,
         initError: null,
@@ -1369,7 +1369,7 @@ describe('App UI', () => {
       // and then checking the rendered output for the queued messages
       // with the ▸ prefix and dimColor styling
 
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Responding,
         submitQuery: mockSubmitQuery,
         initError: null,
@@ -1396,7 +1396,7 @@ describe('App UI', () => {
       const mockSubmitQueryFn = vi.fn();
 
       // Start with idle to allow message queue to process
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Idle,
         submitQuery: mockSubmitQueryFn,
         initError: null,
@@ -1425,7 +1425,7 @@ describe('App UI', () => {
       // The handleFinalSubmit function trims and checks if length > 0
       // before adding to queue, so empty messages are filtered
 
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Idle,
         submitQuery: mockSubmitQuery,
         initError: null,
@@ -1453,7 +1453,7 @@ describe('App UI', () => {
 
       const mockSubmitQueryFn = vi.fn();
 
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Idle,
         submitQuery: mockSubmitQueryFn,
         initError: null,
@@ -1481,7 +1481,7 @@ describe('App UI', () => {
       // This test verifies the display logic handles multiple messages correctly
       // by checking that the MAX_DISPLAYED_QUEUED_MESSAGES constant is respected
 
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Responding,
         submitQuery: mockSubmitQuery,
         initError: null,
@@ -1512,7 +1512,7 @@ describe('App UI', () => {
       // Test that the message queue display logic renders correctly
       // This verifies the UI changes for performance improvements work
 
-      vi.mocked(useGeminiStream).mockReturnValue({
+      vi.mocked(useGrokStream).mockReturnValue({
         streamingState: StreamingState.Responding,
         submitQuery: mockSubmitQuery,
         initError: null,
@@ -1601,7 +1601,7 @@ describe('App UI', () => {
       let onCancelSubmitCallback = () => {};
 
       // Simulate a tool in the "Executing" state.
-      vi.mocked(useGeminiStream).mockImplementation(
+      vi.mocked(useGrokStream).mockImplementation(
         (
           _client,
           _history,

@@ -244,7 +244,7 @@ export interface SubmitPromptResult {
 }
 
 /**
- * Defines the result of the slash command processor for its consumer (useGeminiStream).
+ * Defines the result of the slash command processor for its consumer (useGrokStream).
  */
 export type SlashCommandProcessorResult =
   | {

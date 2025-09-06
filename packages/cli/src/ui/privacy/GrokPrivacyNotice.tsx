@@ -8,11 +8,11 @@ import { Box, Newline, Text } from 'ink';
 import { Colors } from '../colors.js';
 import { useKeypress } from '../hooks/useKeypress.js';
 
-interface GeminiPrivacyNoticeProps {
+interface GrokPrivacyNoticeProps {
   onExit: () => void;
 }
 
-export const GeminiPrivacyNotice = ({ onExit }: GeminiPrivacyNoticeProps) => {
+export const GrokPrivacyNotice = ({ onExit }: GrokPrivacyNoticeProps) => {
   useKeypress(
     (key) => {
       if (key.name === 'escape') {
