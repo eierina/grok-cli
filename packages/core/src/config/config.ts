@@ -440,13 +440,11 @@ export class Config {
   }
 
   getModel(): string {
-    return this.contentGeneratorConfig?.model || this.model;
+    return 'grok-beta'; // Hardcoded for Grok CLI
   }
 
   setModel(newModel: string): void {
-    if (this.contentGeneratorConfig) {
-      this.contentGeneratorConfig.model = newModel;
-    }
+    // Model is hardcoded to 'grok-beta' in Grok CLI - ignore any changes
   }
 
   isInFallbackMode(): boolean {

@@ -12,14 +12,10 @@ import type {
   EmbedContentResponse,
   EmbedContentParameters,
 } from '@google/genai';
-import { GoogleGenAI } from '@google/genai';
-import { createCodeAssistContentGenerator } from '../code_assist/codeAssist.js';
-import { DEFAULT_GEMINI_MODEL } from '../config/models.js';
 import type { Config } from '../config/config.js';
 
 import type { UserTierId } from '../code_assist/types.js';
 import { LoggingContentGenerator } from './loggingContentGenerator.js';
-import { InstallationManager } from '../utils/installationManager.js';
 import { GrokAdapter } from './grokAdapter.js';
 
 /**
@@ -44,10 +40,6 @@ export interface ContentGenerator {
 }
 
 export enum AuthType {
-  LOGIN_WITH_GOOGLE = 'oauth-personal',
-  USE_GEMINI = 'gemini-api-key',
-  USE_VERTEX_AI = 'vertex-ai',
-  CLOUD_SHELL = 'cloud-shell',
   USE_GROK = 'grok-api',
 }
 
@@ -63,50 +55,20 @@ export function createContentGeneratorConfig(
   config: Config,
   authType: AuthType | undefined,
 ): ContentGeneratorConfig {
-  const geminiApiKey = process.env['GEMINI_API_KEY'] || undefined;
-  const googleApiKey = process.env['GOOGLE_API_KEY'] || undefined;
-  const googleCloudProject = process.env['GOOGLE_CLOUD_PROJECT'] || undefined;
-  const googleCloudLocation = process.env['GOOGLE_CLOUD_LOCATION'] || undefined;
   const xaiApiKey = process.env['XAI_API_KEY'] || undefined;
 
-  // Use runtime model from config if available; otherwise, fall back to parameter or default
-  const effectiveModel = config.getModel() || DEFAULT_GEMINI_MODEL;
+  // Hardcode grok-beta as the model
+  const effectiveModel = 'grok-beta';
 
   const contentGeneratorConfig: ContentGeneratorConfig = {
     model: effectiveModel,
-    authType,
+    authType: AuthType.USE_GROK,
     proxy: config?.getProxy(),
   };
 
-  // If we are using Google auth or we are in Cloud Shell, there is nothing else to validate for now
-  if (
-    authType === AuthType.LOGIN_WITH_GOOGLE ||
-    authType === AuthType.CLOUD_SHELL
-  ) {
-    return contentGeneratorConfig;
-  }
-
-  if (authType === AuthType.USE_GEMINI && geminiApiKey) {
-    contentGeneratorConfig.apiKey = geminiApiKey;
-    contentGeneratorConfig.vertexai = false;
-
-    return contentGeneratorConfig;
-  }
-
-  if (
-    authType === AuthType.USE_VERTEX_AI &&
-    (googleApiKey || (googleCloudProject && googleCloudLocation))
-  ) {
-    contentGeneratorConfig.apiKey = googleApiKey;
-    contentGeneratorConfig.vertexai = true;
-
-    return contentGeneratorConfig;
-  }
-
-  if (authType === AuthType.USE_GROK && xaiApiKey) {
+  if (xaiApiKey) {
     contentGeneratorConfig.apiKey = xaiApiKey;
     contentGeneratorConfig.vertexai = false;
-
     return contentGeneratorConfig;
   }
 
@@ -119,61 +81,16 @@ export async function createContentGenerator(
   sessionId?: string,
 ): Promise<ContentGenerator> {
   const version = process.env['CLI_VERSION'] || process.version;
-  const userAgent = `GeminiCLI/${version} (${process.platform}; ${process.arch})`;
+  const userAgent = `GrokCLI/${version} (${process.platform}; ${process.arch})`;
   const baseHeaders: Record<string, string> = {
     'User-Agent': userAgent,
   };
 
-  if (
-    config.authType === AuthType.LOGIN_WITH_GOOGLE ||
-    config.authType === AuthType.CLOUD_SHELL
-  ) {
-    const httpOptions = { headers: baseHeaders };
-    return new LoggingContentGenerator(
-      await createCodeAssistContentGenerator(
-        httpOptions,
-        config.authType,
-        gcConfig,
-        sessionId,
-      ),
-      gcConfig,
-    );
-  }
-
-  if (
-    config.authType === AuthType.USE_GEMINI ||
-    config.authType === AuthType.USE_VERTEX_AI
-  ) {
-    let headers: Record<string, string> = { ...baseHeaders };
-    if (gcConfig?.getUsageStatisticsEnabled()) {
-      const installationManager = new InstallationManager();
-      const installationId = installationManager.getInstallationId();
-      headers = {
-        ...headers,
-        'x-gemini-api-privileged-user-id': `${installationId}`,
-      };
-    }
-    const httpOptions = { headers };
-
-    const googleGenAI = new GoogleGenAI({
-      apiKey: config.apiKey === '' ? undefined : config.apiKey,
-      vertexai: config.vertexai,
-      httpOptions,
-    });
-    return new LoggingContentGenerator(googleGenAI.models, gcConfig);
-  }
-
-  if (config.authType === AuthType.USE_GROK) {
-    const httpOptions = { headers: baseHeaders };
-    const grokAdapter = new GrokAdapter({
-      apiKey: config.apiKey || process.env['XAI_API_KEY'],
-      baseURL: process.env['XAI_BASE_URL'] || 'https://api.x.ai/v1',
-      httpOptions,
-    });
-    return new LoggingContentGenerator(grokAdapter, gcConfig);
-  }
-
-  throw new Error(
-    `Error creating contentGenerator: Unsupported authType: ${config.authType}`,
-  );
+  const httpOptions = { headers: baseHeaders };
+  const grokAdapter = new GrokAdapter({
+    apiKey: config.apiKey || process.env['XAI_API_KEY'],
+    baseURL: process.env['XAI_BASE_URL'] || 'https://api.x.ai/v1',
+    httpOptions,
+  });
+  return new LoggingContentGenerator(grokAdapter, gcConfig);
 }
