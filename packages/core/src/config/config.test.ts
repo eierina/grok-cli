@@ -189,7 +189,7 @@ describe('Server Config (config.ts)', () => {
   describe('refreshAuth', () => {
     it('should refresh auth and update config', async () => {
       const config = new Config(baseParams);
-      const authType = AuthType.USE_GEMINI;
+      const authType = AuthType.USE_GROK;
       const newModel = 'gemini-flash';
       const mockContentConfig = {
         model: newModel,
@@ -219,7 +219,7 @@ describe('Server Config (config.ts)', () => {
 
     it('should preserve conversation history when refreshing auth', async () => {
       const config = new Config(baseParams);
-      const authType = AuthType.USE_GEMINI;
+      const authType = AuthType.USE_GROK;
       const mockContentConfig = {
         model: 'gemini-pro',
         apiKey: 'test-key',
@@ -249,7 +249,7 @@ describe('Server Config (config.ts)', () => {
       // Set the existing client
       (
         config as unknown as { geminiClient: typeof mockExistingClient }
-      ).grokClient = mockExistingClient;
+      ).geminiClient = mockExistingClient;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
       await config.refreshAuth(authType);
@@ -270,7 +270,7 @@ describe('Server Config (config.ts)', () => {
 
     it('should handle case when no existing client is initialized', async () => {
       const config = new Config(baseParams);
-      const authType = AuthType.USE_GEMINI;
+      const authType = AuthType.USE_GROK;
       const mockContentConfig = {
         model: 'gemini-pro',
         apiKey: 'test-key',
@@ -286,7 +286,7 @@ describe('Server Config (config.ts)', () => {
       };
 
       // No existing client
-      (config as unknown as { geminiClient: null }).grokClient = null;
+      (config as unknown as { geminiClient: null }).geminiClient = null;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
       await config.refreshAuth(authType);
@@ -304,7 +304,7 @@ describe('Server Config (config.ts)', () => {
       const mockContentConfig = {
         model: 'gemini-pro',
         apiKey: 'test-key',
-        authType: AuthType.USE_GEMINI,
+        authType: AuthType.USE_GROK,
       };
       (
         config as unknown as { contentGeneratorConfig: ContentGeneratorConfig }
@@ -312,7 +312,7 @@ describe('Server Config (config.ts)', () => {
 
       (createContentGeneratorConfig as Mock).mockReturnValue({
         ...mockContentConfig,
-        authType: AuthType.LOGIN_WITH_GOOGLE,
+        authType: AuthType.USE_GROK,
       });
 
       const mockExistingHistory = [
@@ -331,10 +331,10 @@ describe('Server Config (config.ts)', () => {
 
       (
         config as unknown as { geminiClient: typeof mockExistingClient }
-      ).grokClient = mockExistingClient;
+      ).geminiClient = mockExistingClient;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
-      await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
+      await config.refreshAuth(AuthType.USE_GROK);
 
       expect(mockNewClient.setHistory).toHaveBeenCalledWith(
         mockExistingHistory,
@@ -347,7 +347,7 @@ describe('Server Config (config.ts)', () => {
       const mockContentConfig = {
         model: 'gemini-pro',
         apiKey: 'test-key',
-        authType: AuthType.LOGIN_WITH_GOOGLE,
+        authType: AuthType.USE_GROK,
       };
       (
         config as unknown as { contentGeneratorConfig: ContentGeneratorConfig }
@@ -355,7 +355,7 @@ describe('Server Config (config.ts)', () => {
 
       (createContentGeneratorConfig as Mock).mockReturnValue({
         ...mockContentConfig,
-        authType: AuthType.USE_GEMINI,
+        authType: AuthType.USE_GROK,
       });
 
       const mockExistingHistory = [
@@ -374,10 +374,10 @@ describe('Server Config (config.ts)', () => {
 
       (
         config as unknown as { geminiClient: typeof mockExistingClient }
-      ).grokClient = mockExistingClient;
+      ).geminiClient = mockExistingClient;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
-      await config.refreshAuth(AuthType.USE_GEMINI);
+      await config.refreshAuth(AuthType.USE_GROK);
 
       expect(mockNewClient.setHistory).toHaveBeenCalledWith(
         mockExistingHistory,

@@ -206,7 +206,7 @@ describe('Gemini Client (client.ts)', () => {
       model: 'test-model',
       apiKey: 'test-key',
       vertexai: false,
-      authType: AuthType.USE_GEMINI,
+      authType: AuthType.USE_GROK,
     };
     const mockConfigObject = {
       getContentGeneratorConfig: vi
@@ -2330,7 +2330,7 @@ ${JSON.stringify(
       client['config'].setModel = vi.fn();
 
       const result = await client['handleFlashFallback'](
-        AuthType.LOGIN_WITH_GOOGLE,
+        AuthType.USE_GROK,
       );
 
       expect(result).toBe(fallbackModel);

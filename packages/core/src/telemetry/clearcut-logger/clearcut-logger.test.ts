@@ -57,7 +57,7 @@ expect.extend({
     const { isNot } = this;
     const event = JSON.parse(received[0].source_extension_json) as LogEvent;
     const metadata = event['event_metadata'][0];
-    const data = metadata.find((m) => m.grok_cli_key === key)?.value;
+    const data = metadata.find((m) => m.gemini_cli_key === key)?.value;
 
     const pass = data !== undefined && data === value;
 
@@ -202,7 +202,7 @@ describe('ClearcutLogger', () => {
     it('logs default metadata', () => {
       // Define expected values
       const session_id = 'my-session-id';
-      const auth_type = AuthType.USE_GEMINI;
+      const auth_type = AuthType.USE_GROK;
       const google_accounts = 123;
       const surface = 'ide-1234';
       const cli_version = CLI_VERSION;

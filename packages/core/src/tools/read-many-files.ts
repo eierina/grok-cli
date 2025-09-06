@@ -134,9 +134,9 @@ ${this.config.getTargetDir()}
         ? [
             ...getDefaultExcludes(this.config),
             ...paramExcludes,
-            ...grokIgnorePatterns,
+            ...geminiIgnorePatterns,
           ]
-        : [...paramExcludes, ...grokIgnorePatterns];
+        : [...paramExcludes, ...geminiIgnorePatterns];
 
     let excludeDesc = `Excluding: ${
       finalExclusionPatternsForDescription.length > 0

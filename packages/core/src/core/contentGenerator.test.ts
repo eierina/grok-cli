@@ -30,7 +30,7 @@ describe('createContentGenerator', () => {
     const generator = await createContentGenerator(
       {
         model: 'test-model',
-        authType: AuthType.LOGIN_WITH_GOOGLE,
+        authType: AuthType.USE_GROK,
       },
       mockConfig,
     );
@@ -53,7 +53,7 @@ describe('createContentGenerator', () => {
       {
         model: 'test-model',
         apiKey: 'test-api-key',
-        authType: AuthType.USE_GEMINI,
+        authType: AuthType.USE_GROK,
       },
       mockConfig,
     );
@@ -87,7 +87,7 @@ describe('createContentGenerator', () => {
       {
         model: 'test-model',
         apiKey: 'test-api-key',
-        authType: AuthType.USE_GEMINI,
+        authType: AuthType.USE_GROK,
       },
       mockConfig,
     );
@@ -131,7 +131,7 @@ describe('createContentGeneratorConfig', () => {
     vi.stubEnv('GEMINI_API_KEY', 'env-gemini-key');
     const config = await createContentGeneratorConfig(
       mockConfig,
-      AuthType.USE_GEMINI,
+      AuthType.USE_GROK,
     );
     expect(config.apiKey).toBe('env-gemini-key');
     expect(config.vertexai).toBe(false);
@@ -141,7 +141,7 @@ describe('createContentGeneratorConfig', () => {
     vi.stubEnv('GEMINI_API_KEY', '');
     const config = await createContentGeneratorConfig(
       mockConfig,
-      AuthType.USE_GEMINI,
+      AuthType.USE_GROK,
     );
     expect(config.apiKey).toBeUndefined();
     expect(config.vertexai).toBeUndefined();
@@ -151,7 +151,7 @@ describe('createContentGeneratorConfig', () => {
     vi.stubEnv('GOOGLE_API_KEY', 'env-google-key');
     const config = await createContentGeneratorConfig(
       mockConfig,
-      AuthType.USE_VERTEX_AI,
+      AuthType.USE_GROK,
     );
     expect(config.apiKey).toBe('env-google-key');
     expect(config.vertexai).toBe(true);
@@ -162,7 +162,7 @@ describe('createContentGeneratorConfig', () => {
     vi.stubEnv('GOOGLE_CLOUD_LOCATION', 'env-gcp-location');
     const config = await createContentGeneratorConfig(
       mockConfig,
-      AuthType.USE_VERTEX_AI,
+      AuthType.USE_GROK,
     );
     expect(config.vertexai).toBe(true);
     expect(config.apiKey).toBeUndefined();
@@ -174,7 +174,7 @@ describe('createContentGeneratorConfig', () => {
     vi.stubEnv('GOOGLE_CLOUD_LOCATION', '');
     const config = await createContentGeneratorConfig(
       mockConfig,
-      AuthType.USE_VERTEX_AI,
+      AuthType.USE_GROK,
     );
     expect(config.apiKey).toBeUndefined();
     expect(config.vertexai).toBeUndefined();

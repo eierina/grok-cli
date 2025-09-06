@@ -81,7 +81,7 @@ export async function loadConfig(
     extensionContextFilePaths,
   );
   configParams.userMemory = memoryContent;
-  configParams.grokMdFileCount = fileCount;
+  configParams.geminiMdFileCount = fileCount;
 
   const config = new Config({
     ...configParams,
@@ -100,13 +100,13 @@ export async function loadConfig(
         `[Config] USE_CCPA env var is true but unable to resolve GOOGLE_APPLICATION_CREDENTIALS file path ${adcFilePath}. Error ${e}`,
       );
     }
-    await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
+    await config.refreshAuth(AuthType.USE_GROK);
     logger.info(
       `[Config] GOOGLE_CLOUD_PROJECT: ${process.env['GOOGLE_CLOUD_PROJECT']}`,
     );
   } else if (process.env['GEMINI_API_KEY']) {
     logger.info('[Config] Using Gemini API Key');
-    await config.refreshAuth(AuthType.USE_GEMINI);
+    await config.refreshAuth(AuthType.USE_GROK);
   } else {
     logger.error(
       `[Config] Unable to set GeneratorConfig. Please provide a GEMINI_API_KEY or set USE_CCPA.`,

@@ -38,7 +38,7 @@ export class FileDiscoveryService {
     } catch (_error) {
       // ignore file not found
     }
-    this.grokIgnoreFilter = gParser;
+    this.geminiIgnoreFilter = gParser;
   }
 
   /**
@@ -79,8 +79,8 @@ export class FileDiscoveryService {
    * Checks if a single file should be gemini-ignored
    */
   shouldGeminiIgnoreFile(filePath: string): boolean {
-    if (this.grokIgnoreFilter) {
-      return this.grokIgnoreFilter.isIgnored(filePath);
+    if (this.geminiIgnoreFilter) {
+      return this.geminiIgnoreFilter.isIgnored(filePath);
     }
     return false;
   }
@@ -107,6 +107,6 @@ export class FileDiscoveryService {
    * Returns loaded patterns from .grokignore
    */
   getGeminiIgnorePatterns(): string[] {
-    return this.grokIgnoreFilter?.getPatterns() ?? [];
+    return this.geminiIgnoreFilter?.getPatterns() ?? [];
   }
 }

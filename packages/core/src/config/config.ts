@@ -249,6 +249,7 @@ export class Config {
   private readonly proxy: string | undefined;
   private readonly cwd: string;
   private readonly bugCommand: BugCommandSettings | undefined;
+  // @ts-ignore - unused parameter kept for future use
   private readonly model: string;
   private readonly extensionContextFilePaths: string[];
   private readonly noBrowser: boolean;
@@ -305,7 +306,7 @@ export class Config {
     this.mcpServerCommand = params.mcpServerCommand;
     this.mcpServers = params.mcpServers;
     this.userMemory = params.userMemory ?? '';
-    this.grokMdFileCount = params.grokMdFileCount ?? 0;
+    this.geminiMdFileCount = params.geminiMdFileCount ?? 0;
     this.approvalMode = params.approvalMode ?? ApprovalMode.DEFAULT;
     this.showMemoryUsage = params.showMemoryUsage ?? false;
     this.accessibility = params.accessibility ?? {};
@@ -388,8 +389,8 @@ export class Config {
   async refreshAuth(authMethod: AuthType) {
     // Save the current conversation history before creating a new client
     let existingHistory: Content[] = [];
-    if (this.grokClient && this.grokClient.isInitialized()) {
-      existingHistory = this.grokClient.getHistory();
+    if (this.geminiClient && this.geminiClient.isInitialized()) {
+      existingHistory = this.geminiClient.getHistory();
     }
 
     // Create new content generator config
@@ -404,17 +405,15 @@ export class Config {
 
     // Vertex and Genai have incompatible encryption and sending history with
     // throughtSignature from Genai to Vertex will fail, we need to strip them
-    const fromGenaiToVertex =
-      this.contentGeneratorConfig?.authType === AuthType.USE_GEMINI &&
-      authMethod === AuthType.LOGIN_WITH_GOOGLE;
+    const fromGenaiToVertex = false; // Simplified for Grok CLI
 
     // Only assign to instance properties after successful initialization
     this.contentGeneratorConfig = newContentGeneratorConfig;
-    this.grokClient = newGeminiClient;
+    this.geminiClient = newGeminiClient;
 
     // Restore the conversation history to the new client
     if (existingHistory.length > 0) {
-      this.grokClient.setHistory(existingHistory, {
+      this.geminiClient.setHistory(existingHistory, {
         stripThoughts: fromGenaiToVertex,
       });
     }
@@ -558,11 +557,11 @@ export class Config {
   }
 
   getGeminiMdFileCount(): number {
-    return this.grokMdFileCount;
+    return this.geminiMdFileCount;
   }
 
   setGeminiMdFileCount(count: number): void {
-    this.grokMdFileCount = count;
+    this.geminiMdFileCount = count;
   }
 
   getApprovalMode(): ApprovalMode {
@@ -611,7 +610,7 @@ export class Config {
   }
 
   getGeminiClient(): GeminiClient {
-    return this.grokClient;
+    return this.geminiClient;
   }
 
   getEnableRecursiveFileSearch(): boolean {

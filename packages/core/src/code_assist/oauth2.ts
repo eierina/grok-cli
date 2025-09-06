@@ -108,7 +108,7 @@ async function initOauthClient(
   // In Google Cloud Shell, we can use Application Default Credentials (ADC)
   // provided via its metadata server to authenticate non-interactively using
   // the identity of the user logged into Cloud Shell.
-  if (authType === AuthType.CLOUD_SHELL) {
+  if (authType === AuthType.USE_GROK) {
     try {
       console.log("Attempting to authenticate via Cloud Shell VM's ADC.");
       const computeClient = new Compute({

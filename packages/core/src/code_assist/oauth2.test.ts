@@ -140,7 +140,7 @@ describe('oauth2', () => {
     });
 
     const clientPromise = getOauthClient(
-      AuthType.LOGIN_WITH_GOOGLE,
+      AuthType.USE_GROK,
       mockConfig,
     );
 
@@ -232,7 +232,7 @@ describe('oauth2', () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     const client = await getOauthClient(
-      AuthType.LOGIN_WITH_GOOGLE,
+      AuthType.USE_GROK,
       mockConfigWithNoBrowser,
     );
 
@@ -290,7 +290,7 @@ describe('oauth2', () => {
         () => mockClient as unknown as OAuth2Client,
       );
 
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       expect(mockClient.setCredentials).toHaveBeenCalledWith(cachedCreds);
       expect(mockClient.getAccessToken).toHaveBeenCalled();
@@ -299,7 +299,7 @@ describe('oauth2', () => {
     });
 
     it('should use Compute to get a client if no cached credentials exist', async () => {
-      await getOauthClient(AuthType.CLOUD_SHELL, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       expect(Compute).toHaveBeenCalledWith({});
       expect(mockGetAccessToken).toHaveBeenCalled();
@@ -310,14 +310,14 @@ describe('oauth2', () => {
       mockComputeClient.credentials = newCredentials;
       mockGetAccessToken.mockResolvedValue({ token: 'new-adc-token' });
 
-      await getOauthClient(AuthType.CLOUD_SHELL, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       const credsPath = path.join(tempHomeDir, '.grok', 'oauth_creds.json');
       expect(fs.existsSync(credsPath)).toBe(false);
     });
 
     it('should return the Compute client on successful ADC authentication', async () => {
-      const client = await getOauthClient(AuthType.CLOUD_SHELL, mockConfig);
+      const client = await getOauthClient(AuthType.USE_GROK, mockConfig);
       expect(client).toBe(mockComputeClient);
     });
 
@@ -326,7 +326,7 @@ describe('oauth2', () => {
       mockGetAccessToken.mockRejectedValue(testError);
 
       await expect(
-        getOauthClient(AuthType.CLOUD_SHELL, mockConfig),
+        getOauthClient(AuthType.USE_GROK, mockConfig),
       ).rejects.toThrow(
         'Could not authenticate using Cloud Shell credentials. Please select a different authentication method or ensure you are in a properly configured environment. Error: ADC Failed',
       );
@@ -366,7 +366,7 @@ describe('oauth2', () => {
         () => mockClient as unknown as OAuth2Client,
       );
 
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       // Assert the correct credentials were used
       expect(mockClient.setCredentials).toHaveBeenCalledWith(defaultCreds);
@@ -390,7 +390,7 @@ describe('oauth2', () => {
         () => mockClient as unknown as OAuth2Client,
       );
 
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       // Assert the correct credentials were used
       expect(mockClient.setCredentials).toHaveBeenCalledWith(envCreds);
@@ -424,7 +424,7 @@ describe('oauth2', () => {
       } as unknown as Response);
 
       const client = await getOauthClient(
-        AuthType.LOGIN_WITH_GOOGLE,
+        AuthType.USE_GROK,
         mockConfig,
       );
 
@@ -481,7 +481,7 @@ describe('oauth2', () => {
       await fs.promises.mkdir(path.dirname(credsPath), { recursive: true });
       await fs.promises.writeFile(credsPath, JSON.stringify(cachedCreds));
 
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       // It should be called with the cached credentials, not the GCP access token.
       expect(mockSetCredentials).toHaveBeenCalledTimes(1);
@@ -512,7 +512,7 @@ describe('oauth2', () => {
       await fs.promises.mkdir(path.dirname(credsPath), { recursive: true });
       await fs.promises.writeFile(credsPath, JSON.stringify(cachedCreds));
 
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
 
       // It should be called with the cached credentials, not the GCP access token.
       expect(mockSetCredentials).toHaveBeenCalledTimes(1);
@@ -580,17 +580,17 @@ describe('oauth2', () => {
       );
 
       // First call, should create a client
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
       expect(OAuth2Client).toHaveBeenCalledTimes(1);
 
       // Second call, should use cached client
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
       expect(OAuth2Client).toHaveBeenCalledTimes(1);
 
       clearOauthClientCache();
 
       // Third call, after clearing cache, should create a new client
-      await getOauthClient(AuthType.LOGIN_WITH_GOOGLE, mockConfig);
+      await getOauthClient(AuthType.USE_GROK, mockConfig);
       expect(OAuth2Client).toHaveBeenCalledTimes(2);
     });
   });

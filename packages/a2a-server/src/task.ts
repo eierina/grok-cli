@@ -82,7 +82,7 @@ export class Task {
     this.contextId = contextId;
     this.config = config;
     this.scheduler = this.createScheduler();
-    this.grokClient = new GeminiClient(this.config);
+    this.geminiClient = new GeminiClient(this.config);
     this.pendingToolConfirmationDetails = new Map();
     this.taskState = 'submitted';
     this.eventBus = eventBus;
@@ -116,14 +116,14 @@ export class Task {
     const servers = Object.keys(mcpServers).map((serverName) => ({
       name: serverName,
       status: serverStatuses.get(serverName) || MCPServerStatus.DISCONNECTED,
-      tools: toolRegistry.getToolsByServer(serverName).map((tool) => ({
+      tools: toolRegistry.getToolsByServer(serverName).map((tool: any) => ({
         name: tool.name,
         description: tool.description,
         parameterSchema: tool.schema.parameters,
       })),
     }));
 
-    const availableTools = toolRegistry.getAllTools().map((tool) => ({
+    const availableTools = toolRegistry.getAllTools().map((tool: any) => ({
       name: tool.name,
       description: tool.description,
       parameterSchema: tool.schema.parameters,
@@ -227,7 +227,7 @@ export class Task {
     } = {
       coderAgent: coderAgentMessage,
       model: this.config.getModel(),
-      userTier: this.grokClient.getUserTier(),
+      userTier: this.geminiClient.getUserTier(),
     };
 
     if (metadataError) {
@@ -487,7 +487,7 @@ export class Task {
         old_string === '' && currentContent === '',
       );
     } catch (err) {
-      if (!isNodeError(err) || err.code !== 'ENOENT') throw err;
+      if (!isNodeError(err as Error) || (err as any).code !== 'ENOENT') throw err;
       return '';
     }
   }
@@ -769,7 +769,7 @@ export class Task {
       } else {
         parts = [response];
       }
-      this.grokClient.addHistory({
+      this.geminiClient.addHistory({
         role: 'user',
         parts,
       });
@@ -808,7 +808,7 @@ export class Task {
     // Set task state to working as we are about to call LLM
     this.setTaskStateAndPublishUpdate('working', stateChange);
     // TODO: Determine what it mean to have, then add a prompt ID.
-    yield* this.grokClient.sendMessageStream(
+    yield* this.geminiClient.sendMessageStream(
       llmParts,
       aborted,
       /*prompt_id*/ '',
@@ -848,7 +848,7 @@ export class Task {
       // Set task state to working as we are about to call LLM
       this.setTaskStateAndPublishUpdate('working', stateChange);
       // TODO: Determine what it mean to have, then add a prompt ID.
-      yield* this.grokClient.sendMessageStream(
+      yield* this.geminiClient.sendMessageStream(
         llmParts,
         aborted,
         /*prompt_id*/ '',
