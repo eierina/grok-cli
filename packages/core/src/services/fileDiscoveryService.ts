@@ -9,7 +9,7 @@ import { GitIgnoreParser } from '../utils/gitIgnoreParser.js';
 import { isGitRepository } from '../utils/gitUtils.js';
 import * as path from 'node:path';
 
-const GEMINI_IGNORE_FILE_NAME = '.geminiignore';
+const GEMINI_IGNORE_FILE_NAME = '.grokignore';
 
 export interface FilterFilesOptions {
   respectGitIgnore?: boolean;
@@ -38,7 +38,7 @@ export class FileDiscoveryService {
     } catch (_error) {
       // ignore file not found
     }
-    this.geminiIgnoreFilter = gParser;
+    this.grokIgnoreFilter = gParser;
   }
 
   /**
@@ -79,8 +79,8 @@ export class FileDiscoveryService {
    * Checks if a single file should be gemini-ignored
    */
   shouldGeminiIgnoreFile(filePath: string): boolean {
-    if (this.geminiIgnoreFilter) {
-      return this.geminiIgnoreFilter.isIgnored(filePath);
+    if (this.grokIgnoreFilter) {
+      return this.grokIgnoreFilter.isIgnored(filePath);
     }
     return false;
   }
@@ -104,9 +104,9 @@ export class FileDiscoveryService {
   }
 
   /**
-   * Returns loaded patterns from .geminiignore
+   * Returns loaded patterns from .grokignore
    */
   getGeminiIgnorePatterns(): string[] {
-    return this.geminiIgnoreFilter?.getPatterns() ?? [];
+    return this.grokIgnoreFilter?.getPatterns() ?? [];
   }
 }

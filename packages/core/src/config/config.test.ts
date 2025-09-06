@@ -66,9 +66,9 @@ vi.mock('../tools/read-many-files');
 vi.mock('../tools/memoryTool', () => ({
   MemoryTool: vi.fn(),
   setGeminiMdFilename: vi.fn(),
-  getCurrentGeminiMdFilename: vi.fn(() => 'GEMINI.md'), // Mock the original filename
-  DEFAULT_CONTEXT_FILENAME: 'GEMINI.md',
-  GEMINI_CONFIG_DIR: '.gemini',
+  getCurrentGeminiMdFilename: vi.fn(() => 'GROK.md'), // Mock the original filename
+  DEFAULT_CONTEXT_FILENAME: 'GROK.md',
+  GEMINI_CONFIG_DIR: '.grok',
 }));
 
 vi.mock('../core/contentGenerator.js', async (importOriginal) => {
@@ -249,7 +249,7 @@ describe('Server Config (config.ts)', () => {
       // Set the existing client
       (
         config as unknown as { geminiClient: typeof mockExistingClient }
-      ).geminiClient = mockExistingClient;
+      ).grokClient = mockExistingClient;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
       await config.refreshAuth(authType);
@@ -286,7 +286,7 @@ describe('Server Config (config.ts)', () => {
       };
 
       // No existing client
-      (config as unknown as { geminiClient: null }).geminiClient = null;
+      (config as unknown as { geminiClient: null }).grokClient = null;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
       await config.refreshAuth(authType);
@@ -331,7 +331,7 @@ describe('Server Config (config.ts)', () => {
 
       (
         config as unknown as { geminiClient: typeof mockExistingClient }
-      ).geminiClient = mockExistingClient;
+      ).grokClient = mockExistingClient;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
       await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
@@ -374,7 +374,7 @@ describe('Server Config (config.ts)', () => {
 
       (
         config as unknown as { geminiClient: typeof mockExistingClient }
-      ).geminiClient = mockExistingClient;
+      ).grokClient = mockExistingClient;
       (GeminiClient as Mock).mockImplementation(() => mockNewClient);
 
       await config.refreshAuth(AuthType.USE_GEMINI);

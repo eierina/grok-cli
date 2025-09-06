@@ -65,7 +65,7 @@ export interface ReadManyFilesParams {
   useDefaultExcludes?: boolean;
 
   /**
-   * Whether to respect .gitignore and .geminiignore patterns (optional, defaults to true)
+   * Whether to respect .gitignore and .grokignore patterns (optional, defaults to true)
    */
   file_filtering_options?: {
     respect_git_ignore?: boolean;
@@ -94,7 +94,7 @@ type FileProcessingResult =
 
 /**
  * Creates the default exclusion patterns including dynamic patterns.
- * This combines the shared patterns with dynamic patterns like GEMINI.md.
+ * This combines the shared patterns with dynamic patterns like GROK.md.
  * TODO(adh): Consider making this configurable or extendable through a command line argument.
  */
 function getDefaultExcludes(config?: Config): string[] {
@@ -134,9 +134,9 @@ ${this.config.getTargetDir()}
         ? [
             ...getDefaultExcludes(this.config),
             ...paramExcludes,
-            ...geminiIgnorePatterns,
+            ...grokIgnorePatterns,
           ]
-        : [...paramExcludes, ...geminiIgnorePatterns];
+        : [...paramExcludes, ...grokIgnorePatterns];
 
     let excludeDesc = `Excluding: ${
       finalExclusionPatternsForDescription.length > 0
@@ -149,13 +149,13 @@ ${finalExclusionPatternsForDescription
         : 'none specified'
     }`;
 
-    // Add a note if .geminiignore patterns contributed to the final list of exclusions
+    // Add a note if .grokignore patterns contributed to the final list of exclusions
     if (geminiIgnorePatterns.length > 0) {
       const geminiPatternsInEffect = geminiIgnorePatterns.filter((p) =>
         finalExclusionPatternsForDescription.includes(p),
       ).length;
       if (geminiPatternsInEffect > 0) {
-        excludeDesc += ` (includes ${geminiPatternsInEffect} from .geminiignore)`;
+        excludeDesc += ` (includes ${geminiPatternsInEffect} from .grokignore)`;
       }
     }
 
@@ -571,7 +571,7 @@ export class ReadManyFilesTool extends BaseDeclarativeTool<
         },
         file_filtering_options: {
           description:
-            'Whether to respect ignore patterns from .gitignore or .geminiignore',
+            'Whether to respect ignore patterns from .gitignore or .grokignore',
           type: 'object',
           properties: {
             respect_git_ignore: {
@@ -581,7 +581,7 @@ export class ReadManyFilesTool extends BaseDeclarativeTool<
             },
             respect_gemini_ignore: {
               description:
-                'Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.',
+                'Optional: Whether to respect .grokignore patterns when listing files. Defaults to true.',
               type: 'boolean',
             },
           },

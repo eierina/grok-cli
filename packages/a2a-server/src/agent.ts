@@ -163,7 +163,7 @@ class CoderAgentExecutor implements AgentExecutor {
       eventBus,
     );
     runtimeTask.taskState = persistedState._taskState;
-    await runtimeTask.geminiClient.initialize(
+    await runtimeTask.grokClient.initialize(
       runtimeTask.config.getContentGeneratorConfig(),
     );
 
@@ -182,7 +182,7 @@ class CoderAgentExecutor implements AgentExecutor {
     const agentSettings = agentSettingsInput || ({} as AgentSettings);
     const config = await this.getConfig(agentSettings, taskId);
     const runtimeTask = await Task.create(taskId, contextId, config, eventBus);
-    await runtimeTask.geminiClient.initialize(
+    await runtimeTask.grokClient.initialize(
       runtimeTask.config.getContentGeneratorConfig(),
     );
 

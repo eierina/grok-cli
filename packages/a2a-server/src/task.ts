@@ -82,7 +82,7 @@ export class Task {
     this.contextId = contextId;
     this.config = config;
     this.scheduler = this.createScheduler();
-    this.geminiClient = new GeminiClient(this.config);
+    this.grokClient = new GeminiClient(this.config);
     this.pendingToolConfirmationDetails = new Map();
     this.taskState = 'submitted';
     this.eventBus = eventBus;
@@ -227,7 +227,7 @@ export class Task {
     } = {
       coderAgent: coderAgentMessage,
       model: this.config.getModel(),
-      userTier: this.geminiClient.getUserTier(),
+      userTier: this.grokClient.getUserTier(),
     };
 
     if (metadataError) {
@@ -769,7 +769,7 @@ export class Task {
       } else {
         parts = [response];
       }
-      this.geminiClient.addHistory({
+      this.grokClient.addHistory({
         role: 'user',
         parts,
       });
@@ -808,7 +808,7 @@ export class Task {
     // Set task state to working as we are about to call LLM
     this.setTaskStateAndPublishUpdate('working', stateChange);
     // TODO: Determine what it mean to have, then add a prompt ID.
-    yield* this.geminiClient.sendMessageStream(
+    yield* this.grokClient.sendMessageStream(
       llmParts,
       aborted,
       /*prompt_id*/ '',
@@ -848,7 +848,7 @@ export class Task {
       // Set task state to working as we are about to call LLM
       this.setTaskStateAndPublishUpdate('working', stateChange);
       // TODO: Determine what it mean to have, then add a prompt ID.
-      yield* this.geminiClient.sendMessageStream(
+      yield* this.grokClient.sendMessageStream(
         llmParts,
         aborted,
         /*prompt_id*/ '',

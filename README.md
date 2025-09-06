@@ -91,7 +91,7 @@ npm install -g @google/gemini-cli@nightly
 
 - Ground your queries with built-in [Google Search](https://ai.google.dev/gemini-api/docs/grounding) for real-time information
 - Conversation checkpointing to save and resume complex sessions
-- Custom context files (GEMINI.md) to tailor behavior for your projects
+- Custom context files (GROK.md) to tailor behavior for your projects
 
 ### GitHub Integration
 
@@ -226,7 +226,7 @@ gemini
 
 - [**Commands Reference**](./docs/cli/commands.md) - All slash commands (`/help`, `/chat`, `/mcp`, etc.)
 - [**Checkpointing**](./docs/checkpointing.md) - Save and resume conversations
-- [**Memory Management**](./docs/tools/memory.md) - Using GEMINI.md context files
+- [**Memory Management**](./docs/tools/memory.md) - Using GROK.md context files
 - [**Token Caching**](./docs/cli/token-caching.md) - Optimize token usage
 
 ### Tools & Extensions
@@ -252,7 +252,7 @@ gemini
 
 - [**Settings Reference**](./docs/cli/configuration.md) - All configuration options
 - [**Theme Customization**](./docs/cli/themes.md) - Visual customization
-- [**.gemini Directory**](./docs/gemini-ignore.md) - Project-specific settings
+- [**.grok Directory**](./docs/gemini-ignore.md) - Project-specific settings
 - [**Environment Variables**](./docs/cli/configuration.md#environment-variables)
 
 ### Troubleshooting & Support
@@ -263,7 +263,7 @@ gemini
 
 ### Using MCP Servers
 
-Configure MCP servers in `~/.gemini/settings.json` to extend Gemini CLI with custom tools:
+Configure MCP servers in `~/.grok/settings.json` to extend Gemini CLI with custom tools:
 
 ```text
 > @github List my open pull requests

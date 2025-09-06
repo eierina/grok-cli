@@ -11,8 +11,8 @@ The most powerful tools for enterprise administration are the system-wide settin
 Settings are merged from four files. The precedence order for single-value settings (like `theme`) is:
 
 1. System Defaults (`system-defaults.json`)
-2. User Settings (`~/.gemini/settings.json`)
-3. Workspace Settings (`<project>/.gemini/settings.json`)
+2. User Settings (`~/.grok/settings.json`)
+3. Workspace Settings (`<project>/.grok/settings.json`)
 4. System Overrides (`settings.json`)
 
 This means the System Overrides file has the final say. For settings that are arrays (`includeDirectories`) or objects (`mcpServers`), the values are merged.
@@ -30,7 +30,7 @@ Here is how settings from different levels are combined.
   }
   ```
 
-- **User `settings.json` (`~/.gemini/settings.json`):**
+- **User `settings.json` (`~/.grok/settings.json`):**
 
   ```json
   {
@@ -47,7 +47,7 @@ Here is how settings from different levels are combined.
   }
   ```
 
-- **Workspace `settings.json` (`<project>/.gemini/settings.json`):**
+- **Workspace `settings.json` (`<project>/.grok/settings.json`):**
 
   ```json
   {

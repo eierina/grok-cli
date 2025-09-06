@@ -66,7 +66,7 @@ describe('chatCommand', () => {
               getChat: mockGetChat,
             }) as unknown as GeminiClient,
           storage: {
-            getProjectTempDir: () => '/project/root/.gemini/tmp/mockhash',
+            getProjectTempDir: () => '/project/root/.grok/tmp/mockhash',
           },
         },
         logger: {

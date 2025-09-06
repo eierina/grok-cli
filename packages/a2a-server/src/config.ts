@@ -81,7 +81,7 @@ export async function loadConfig(
     extensionContextFilePaths,
   );
   configParams.userMemory = memoryContent;
-  configParams.geminiMdFileCount = fileCount;
+  configParams.grokMdFileCount = fileCount;
 
   const config = new Config({
     ...configParams,

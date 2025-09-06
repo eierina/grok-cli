@@ -51,7 +51,7 @@ The Gemini CLI uses the `mcpServers` configuration in your `settings.json` file 
 
 ### Configure the MCP server in settings.json
 
-You can configure MCP servers at the global level in the `~/.gemini/settings.json` file or in your project's root directory, create or open the `.gemini/settings.json` file. Within the file, add the `mcpServers` configuration block.
+You can configure MCP servers at the global level in the `~/.grok/settings.json` file or in your project's root directory, create or open the `.grok/settings.json` file. Within the file, add the `mcpServers` configuration block.
 
 ### Configuration Structure
 
@@ -175,7 +175,7 @@ Use the `/mcp auth` command to manage OAuth authentication:
 
 OAuth tokens are automatically:
 
-- **Stored securely** in `~/.gemini/mcp-oauth-tokens.json`
+- **Stored securely** in `~/.grok/mcp-oauth-tokens.json`
 - **Refreshed** when expired (if refresh tokens are available)
 - **Validated** before each connection attempt
 - **Cleaned up** when invalid or expired
@@ -695,7 +695,7 @@ While you can always configure MCP servers by manually editing your `settings.js
 
 ### Adding a Server (`gemini mcp add`)
 
-The `add` command configures a new MCP server in your `settings.json`. Based on the scope (`-s, --scope`), it will be added to either the user config `~/.gemini/settings.json` or the project config `.gemini/settings.json` file.
+The `add` command configures a new MCP server in your `settings.json`. Based on the scope (`-s, --scope`), it will be added to either the user config `~/.grok/settings.json` or the project config `.grok/settings.json` file.
 
 **Command:**
 

@@ -305,7 +305,7 @@ export class Config {
     this.mcpServerCommand = params.mcpServerCommand;
     this.mcpServers = params.mcpServers;
     this.userMemory = params.userMemory ?? '';
-    this.geminiMdFileCount = params.geminiMdFileCount ?? 0;
+    this.grokMdFileCount = params.grokMdFileCount ?? 0;
     this.approvalMode = params.approvalMode ?? ApprovalMode.DEFAULT;
     this.showMemoryUsage = params.showMemoryUsage ?? false;
     this.accessibility = params.accessibility ?? {};
@@ -388,8 +388,8 @@ export class Config {
   async refreshAuth(authMethod: AuthType) {
     // Save the current conversation history before creating a new client
     let existingHistory: Content[] = [];
-    if (this.geminiClient && this.geminiClient.isInitialized()) {
-      existingHistory = this.geminiClient.getHistory();
+    if (this.grokClient && this.grokClient.isInitialized()) {
+      existingHistory = this.grokClient.getHistory();
     }
 
     // Create new content generator config
@@ -410,11 +410,11 @@ export class Config {
 
     // Only assign to instance properties after successful initialization
     this.contentGeneratorConfig = newContentGeneratorConfig;
-    this.geminiClient = newGeminiClient;
+    this.grokClient = newGeminiClient;
 
     // Restore the conversation history to the new client
     if (existingHistory.length > 0) {
-      this.geminiClient.setHistory(existingHistory, {
+      this.grokClient.setHistory(existingHistory, {
         stripThoughts: fromGenaiToVertex,
       });
     }
@@ -560,11 +560,11 @@ export class Config {
   }
 
   getGeminiMdFileCount(): number {
-    return this.geminiMdFileCount;
+    return this.grokMdFileCount;
   }
 
   setGeminiMdFileCount(count: number): void {
-    this.geminiMdFileCount = count;
+    this.grokMdFileCount = count;
   }
 
   getApprovalMode(): ApprovalMode {
@@ -613,7 +613,7 @@ export class Config {
   }
 
   getGeminiClient(): GeminiClient {
-    return this.geminiClient;
+    return this.grokClient;
   }
 
   getEnableRecursiveFileSearch(): boolean {

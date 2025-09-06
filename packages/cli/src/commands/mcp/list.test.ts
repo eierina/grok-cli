@@ -27,9 +27,9 @@ vi.mock('grok-cli-core', () => ({
   Storage: vi.fn().mockImplementation((_cwd: string) => ({
     getGlobalSettingsPath: () => '/tmp/gemini/settings.json',
     getWorkspaceSettingsPath: () => '/tmp/gemini/workspace-settings.json',
-    getProjectTempDir: () => '/test/home/.gemini/tmp/mocked_hash',
+    getProjectTempDir: () => '/test/home/.grok/tmp/mocked_hash',
   })),
-  GEMINI_CONFIG_DIR: '.gemini',
+  GEMINI_CONFIG_DIR: '.grok',
   getErrorMessage: (e: unknown) => (e instanceof Error ? e.message : String(e)),
 }));
 vi.mock('@modelcontextprotocol/sdk/client/index.js');

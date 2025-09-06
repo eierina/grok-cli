@@ -17,10 +17,10 @@ import { SettingScope, loadSettings } from '../config/settings.js';
 import { getErrorMessage } from '../utils/errors.js';
 import { recursivelyHydrateStrings } from './extensions/variables.js';
 
-export const EXTENSIONS_DIRECTORY_NAME = '.gemini/extensions';
+export const EXTENSIONS_DIRECTORY_NAME = '.grok/extensions';
 
 export const EXTENSIONS_CONFIG_FILENAME = 'gemini-extension.json';
-export const INSTALL_METADATA_FILENAME = '.gemini-extension-install.json';
+export const INSTALL_METADATA_FILENAME = '.grok-extension-install.json';
 
 export interface Extension {
   path: string;
@@ -226,7 +226,7 @@ function loadInstallMetadata(
 
 function getContextFileNames(config: ExtensionConfig): string[] {
   if (!config.contextFileName) {
-    return ['GEMINI.md'];
+    return ['GROK.md'];
   } else if (!Array.isArray(config.contextFileName)) {
     return [config.contextFileName];
   }
@@ -352,7 +352,7 @@ export async function installExtension(
       );
     }
 
-    // ~/.gemini/extensions/{ExtensionConfig.name}.
+    // ~/.grok/extensions/{ExtensionConfig.name}.
     newExtensionName = newExtension.config.name;
     const extensionStorage = new ExtensionStorage(newExtensionName);
     const destinationPath = extensionStorage.getExtensionDir();
@@ -448,7 +448,7 @@ export async function updateExtension(
   }
   if (!extension.installMetadata) {
     throw new Error(
-      `Extension cannot be updated because it is missing the .gemini-extension.install.json file. To update manually, uninstall and then reinstall the updated version.`,
+      `Extension cannot be updated because it is missing the .grok-extension.install.json file. To update manually, uninstall and then reinstall the updated version.`,
     );
   }
   const originalVersion = extension.config.version;

@@ -22,7 +22,7 @@ import { mergeWith } from 'lodash-es';
 
 export type { Settings, MemoryImportFormat };
 
-export const SETTINGS_DIRECTORY_NAME = '.gemini';
+export const SETTINGS_DIRECTORY_NAME = '.grok';
 
 export const USER_SETTINGS_PATH = Storage.getGlobalSettingsPath();
 export const USER_SETTINGS_DIR = path.dirname(USER_SETTINGS_PATH);

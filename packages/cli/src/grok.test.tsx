@@ -134,7 +134,7 @@ describe('grok.tsx main function', () => {
       settings: {},
     };
     const workspaceSettingsFile: SettingsFile = {
-      path: '/workspace/.gemini/settings.json',
+      path: '/workspace/.grok/settings.json',
       settings: {},
     };
     const systemSettingsFile: SettingsFile = {
