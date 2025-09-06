@@ -6,10 +6,7 @@
 
 import type { ContentGenerator } from '../core/contentGenerator.js';
 import { AuthType } from '../core/contentGenerator.js';
-import { getOauthClient } from './oauth2.js';
-import { setupUser } from './setup.js';
 import type { HttpOptions } from './server.js';
-import { CodeAssistServer } from './server.js';
 import type { Config } from '../config/config.js';
 
 export async function createCodeAssistContentGenerator(
@@ -18,20 +15,6 @@ export async function createCodeAssistContentGenerator(
   config: Config,
   sessionId?: string,
 ): Promise<ContentGenerator> {
-  if (
-    authType === AuthType.LOGIN_WITH_GOOGLE ||
-    authType === AuthType.CLOUD_SHELL
-  ) {
-    const authClient = await getOauthClient(authType, config);
-    const userData = await setupUser(authClient);
-    return new CodeAssistServer(
-      authClient,
-      userData.projectId,
-      httpOptions,
-      sessionId,
-      userData.userTier,
-    );
-  }
-
-  throw new Error(`Unsupported authType: ${authType}`);
+  // Code Assist is not supported in Grok CLI
+  throw new Error('Code Assist is not supported in Grok CLI - only Grok API is supported');
 }
