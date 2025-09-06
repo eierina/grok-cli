@@ -9,7 +9,7 @@ import {
   getIdeInstaller,
   IDEConnectionStatus,
   ideContext,
-  GEMINI_CLI_COMPANION_EXTENSION_NAME,
+  GROK_CLI_COMPANION_EXTENSION_NAME,
 } from 'grok-cli-core';
 import path from 'node:path';
 import type {
@@ -163,7 +163,7 @@ export const ideCommand = (config: Config | null): SlashCommand | null => {
         context.ui.addItem(
           {
             type: 'error',
-            text: `No installer is available for ${ideClient.getDetectedIdeDisplayName()}. Please install the '${GEMINI_CLI_COMPANION_EXTENSION_NAME}' extension manually from the marketplace.`,
+            text: `No installer is available for ${ideClient.getDetectedIdeDisplayName()}. Please install the '${GROK_CLI_COMPANION_EXTENSION_NAME}' extension manually from the marketplace.`,
           },
           Date.now(),
         );

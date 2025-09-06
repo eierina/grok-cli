@@ -376,7 +376,7 @@ describe('App UI', () => {
     });
 
     afterEach(() => {
-      delete process.env.GEMINI_CLI_DISABLE_AUTOUPDATER;
+      delete process.env.GROK_CLI_DISABLE_AUTOUPDATER;
     });
 
     it('should not start the update process when running from git', async () => {
@@ -502,9 +502,9 @@ describe('App UI', () => {
       });
     });
 
-    it('should not auto-update if GEMINI_CLI_DISABLE_AUTOUPDATER is true', async () => {
+    it('should not auto-update if GROK_CLI_DISABLE_AUTOUPDATER is true', async () => {
       mockedIsGitRepository.mockResolvedValue(false);
-      process.env.GEMINI_CLI_DISABLE_AUTOUPDATER = 'true';
+      process.env.GROK_CLI_DISABLE_AUTOUPDATER = 'true';
       const info: UpdateObject = {
         update: {
           name: 'grok-cli',

@@ -20,8 +20,8 @@ import type { DiffManager } from './diff-manager.js';
 import { OpenFilesManager } from './open-files-manager.js';
 
 const MCP_SESSION_ID_HEADER = 'mcp-session-id';
-const IDE_SERVER_PORT_ENV_VAR = 'GEMINI_CLI_IDE_SERVER_PORT';
-const IDE_WORKSPACE_PATH_ENV_VAR = 'GEMINI_CLI_IDE_WORKSPACE_PATH';
+const IDE_SERVER_PORT_ENV_VAR = 'GROK_CLI_IDE_SERVER_PORT';
+const IDE_WORKSPACE_PATH_ENV_VAR = 'GROK_CLI_IDE_WORKSPACE_PATH';
 
 function writePortAndWorkspace(
   context: vscode.ExtensionContext,

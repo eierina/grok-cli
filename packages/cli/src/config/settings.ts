@@ -81,8 +81,8 @@ const MIGRATION_MAP: Record<string, string> = {
 };
 
 export function getSystemSettingsPath(): string {
-  if (process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH']) {
-    return process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH'];
+  if (process.env['GROK_CLI_SYSTEM_SETTINGS_PATH']) {
+    return process.env['GROK_CLI_SYSTEM_SETTINGS_PATH'];
   }
   if (platform() === 'darwin') {
     return '/Library/Application Support/GeminiCli/settings.json';
@@ -94,8 +94,8 @@ export function getSystemSettingsPath(): string {
 }
 
 export function getSystemDefaultsPath(): string {
-  if (process.env['GEMINI_CLI_SYSTEM_DEFAULTS_PATH']) {
-    return process.env['GEMINI_CLI_SYSTEM_DEFAULTS_PATH'];
+  if (process.env['GROK_CLI_SYSTEM_DEFAULTS_PATH']) {
+    return process.env['GROK_CLI_SYSTEM_DEFAULTS_PATH'];
   }
   return path.join(
     path.dirname(getSystemSettingsPath()),
