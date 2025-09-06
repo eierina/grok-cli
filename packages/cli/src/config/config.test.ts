@@ -15,11 +15,11 @@ import {
 } from 'vitest';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { ShellTool, EditTool, WriteFileTool } from '@google/gemini-cli-core';
+import { ShellTool, EditTool, WriteFileTool } from 'grok-cli-core';
 import { loadCliConfig, parseArguments, type CliArgs } from './config.js';
 import type { Settings } from './settings.js';
 import type { Extension } from './extension.js';
-import * as ServerConfig from '@google/gemini-cli-core';
+import * as ServerConfig from 'grok-cli-core';
 import { isWorkspaceTrusted } from './trustedFolders.js';
 
 vi.mock('./trustedFolders.js', () => ({
@@ -76,9 +76,9 @@ vi.mock('read-package-up', () => ({
   ),
 }));
 
-vi.mock('@google/gemini-cli-core', async () => {
+vi.mock('grok-cli-core', async () => {
   const actualServer = await vi.importActual<typeof ServerConfig>(
-    '@google/gemini-cli-core',
+    'grok-cli-core',
   );
   return {
     ...actualServer,
