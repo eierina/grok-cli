@@ -288,7 +288,9 @@ export class GrokAdapter implements ContentGenerator {
       
       // Handle system instruction if present in config
       const config = request.config as GenerateContentConfig & { 
-        systemInstruction?: string | Content 
+        systemInstruction?: string | Content,
+        responseJsonSchema?: Record<string, unknown>,
+        responseMimeType?: string
       };
       
       if (config?.systemInstruction) {
@@ -327,36 +329,89 @@ export class GrokAdapter implements ContentGenerator {
       // Extract generation config
       const genConfig = request.config as GenerateContentConfig;
 
-      // Make the API call
-      const completion = await this.openai.chat.completions.create({
-        model: modelName,
-        messages,
-        temperature: genConfig?.temperature,
-        max_tokens: genConfig?.maxOutputTokens,
-        top_p: genConfig?.topP,
-        stop: genConfig?.stopSequences,
-      });
+      // Check if JSON response is requested
+      const isJsonRequest = config?.responseJsonSchema && config?.responseMimeType === 'application/json';
 
-      // Convert response
-      if (completion.choices[0]?.message) {
-        const response = this.convertOpenAIToGemini(
-          completion.choices[0].message,
-          completion.choices[0].finish_reason || undefined
-        );
+      if (isJsonRequest) {
+        // Use function calling to get structured JSON output
+        const functionName = 'generate_json_response';
+        const completion = await this.openai.chat.completions.create({
+          model: modelName,
+          messages,
+          temperature: genConfig?.temperature,
+          max_tokens: genConfig?.maxOutputTokens,
+          top_p: genConfig?.topP,
+          stop: genConfig?.stopSequences,
+          tools: [{
+            type: 'function',
+            function: {
+              name: functionName,
+              description: 'Generate a JSON response matching the required schema',
+              parameters: config.responseJsonSchema as any,
+            },
+          }],
+          tool_choice: { type: 'function', function: { name: functionName } },
+        });
+
+        // Extract JSON from function call
+        if (completion.choices[0]?.message?.tool_calls?.[0]) {
+          const toolCall = completion.choices[0].message.tool_calls[0];
+          if (toolCall.type === 'function' && toolCall.function) {
+            const jsonResponse = toolCall.function.arguments;
+            // Return the JSON as text in the response
+            return new GrokGenerateContentResponse({
+              candidates: [{
+                content: {
+                  role: 'model',
+                  parts: [{ text: jsonResponse }],
+                },
+                finishReason: FinishReason.STOP,
+                index: 0,
+                safetyRatings: [],
+              }],
+              modelVersion: 'grok-4',
+              usageMetadata: completion.usage ? {
+                promptTokenCount: completion.usage.prompt_tokens,
+                candidatesTokenCount: completion.usage.completion_tokens,
+                totalTokenCount: completion.usage.total_tokens,
+              } : undefined,
+            });
+          }
+        }
         
-        // Add usage metadata if available
-        if (completion.usage) {
-          response.usageMetadata = {
-            promptTokenCount: completion.usage.prompt_tokens,
-            candidatesTokenCount: completion.usage.completion_tokens,
-            totalTokenCount: completion.usage.total_tokens,
-          };
+        throw new Error('No JSON response from Grok API');
+      } else {
+        // Regular content generation
+        const completion = await this.openai.chat.completions.create({
+          model: modelName,
+          messages,
+          temperature: genConfig?.temperature,
+          max_tokens: genConfig?.maxOutputTokens,
+          top_p: genConfig?.topP,
+          stop: genConfig?.stopSequences,
+        });
+
+        // Convert response
+        if (completion.choices[0]?.message) {
+          const response = this.convertOpenAIToGemini(
+            completion.choices[0].message,
+            completion.choices[0].finish_reason || undefined
+          );
+          
+          // Add usage metadata if available
+          if (completion.usage) {
+            response.usageMetadata = {
+              promptTokenCount: completion.usage.prompt_tokens,
+              candidatesTokenCount: completion.usage.completion_tokens,
+              totalTokenCount: completion.usage.total_tokens,
+            };
+          }
+
+          return response;
         }
 
-        return response;
+        throw new Error('No response from Grok API');
       }
-
-      throw new Error('No response from Grok API');
     } catch (error) {
       throw this.convertError(error);
     }
@@ -381,7 +436,9 @@ export class GrokAdapter implements ContentGenerator {
       
       // Handle system instruction
       const config = request.config as GenerateContentConfig & { 
-        systemInstruction?: string | Content 
+        systemInstruction?: string | Content,
+        responseJsonSchema?: Record<string, unknown>,
+        responseMimeType?: string
       };
       
       if (config?.systemInstruction) {
@@ -416,7 +473,60 @@ export class GrokAdapter implements ContentGenerator {
       const modelName = this.mapModelName(request.model);
       const genConfig = request.config as GenerateContentConfig;
 
-      // Create streaming request
+      // Check if JSON response is requested
+      const isJsonRequest = config?.responseJsonSchema && config?.responseMimeType === 'application/json';
+
+      if (isJsonRequest) {
+        // For JSON requests, we can't stream - use non-streaming with function call
+        const functionName = 'generate_json_response';
+        const completion = await this.openai.chat.completions.create({
+          model: modelName,
+          messages,
+          temperature: genConfig?.temperature,
+          max_tokens: genConfig?.maxOutputTokens,
+          top_p: genConfig?.topP,
+          stop: genConfig?.stopSequences,
+          tools: [{
+            type: 'function',
+            function: {
+              name: functionName,
+              description: 'Generate a JSON response matching the required schema',
+              parameters: config.responseJsonSchema as any,
+            },
+          }],
+          tool_choice: { type: 'function', function: { name: functionName } },
+        });
+
+        // Extract JSON from function call and yield as a single response
+        if (completion.choices[0]?.message?.tool_calls?.[0]) {
+          const toolCall = completion.choices[0].message.tool_calls[0];
+          if (toolCall.type === 'function' && toolCall.function) {
+            const jsonResponse = toolCall.function.arguments;
+            yield new GrokGenerateContentResponse({
+              candidates: [{
+                content: {
+                  role: 'model',
+                  parts: [{ text: jsonResponse }],
+                },
+                finishReason: FinishReason.STOP,
+                index: 0,
+                safetyRatings: [],
+              }],
+              modelVersion: 'grok-4',
+              usageMetadata: completion.usage ? {
+                promptTokenCount: completion.usage.prompt_tokens,
+                candidatesTokenCount: completion.usage.completion_tokens,
+                totalTokenCount: completion.usage.total_tokens,
+              } : undefined,
+            });
+            return;
+          }
+        }
+        
+        throw new Error('No JSON response from Grok API');
+      }
+
+      // Regular streaming for non-JSON requests
       const stream = await this.openai.chat.completions.create({
         model: modelName,
         messages,
