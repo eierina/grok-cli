@@ -57,8 +57,8 @@ export function createContentGeneratorConfig(
 ): ContentGeneratorConfig {
   const xaiApiKey = process.env['XAI_API_KEY'] || undefined;
 
-  // Hardcode grok-beta as the model
-  const effectiveModel = 'grok-beta';
+  // Use the model from config
+  const effectiveModel = config.getModel();
 
   const contentGeneratorConfig: ContentGeneratorConfig = {
     model: effectiveModel,

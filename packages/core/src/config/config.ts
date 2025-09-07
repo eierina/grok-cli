@@ -250,7 +250,7 @@ export class Config {
   private readonly cwd: string;
   private readonly bugCommand: BugCommandSettings | undefined;
   // @ts-ignore - unused parameter kept for future use
-  private readonly model: string;
+  private model: string;
   private readonly extensionContextFilePaths: string[];
   private readonly noBrowser: boolean;
   private readonly folderTrustFeature: boolean;
@@ -439,11 +439,11 @@ export class Config {
   }
 
   getModel(): string {
-    return 'grok-beta'; // Hardcoded for Grok CLI
+    return this.model;
   }
 
   setModel(newModel: string): void {
-    // Model is hardcoded to 'grok-beta' in Grok CLI - ignore any changes
+    this.model = newModel;
   }
 
   isInFallbackMode(): boolean {

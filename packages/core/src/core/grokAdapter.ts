@@ -184,6 +184,7 @@ export class GrokAdapter implements ContentGenerator {
   private convertOpenAIToGemini(
     message: OpenAI.ChatCompletionMessage,
     finishReason?: string,
+    modelName: string = 'grok-4-0709',
   ): GrokGenerateContentResponse {
     const parts: Part[] = [];
 
@@ -232,7 +233,7 @@ export class GrokAdapter implements ContentGenerator {
         index: 0,
         safetyRatings: [],
       }],
-      modelVersion: 'grok-4',
+      modelVersion: modelName,
     });
   }
 
@@ -264,16 +265,31 @@ export class GrokAdapter implements ContentGenerator {
    * Map model names
    */
   private mapModelName(geminiModel?: string): string {
-    if (!geminiModel) return 'grok-4';
+    if (!geminiModel) return 'grok-4-0709';
     
+    // Map Gemini models to xAI's official model names
     const modelMap: Record<string, string> = {
-      'gemini-2.5-pro': 'grok-4',
-      'gemini-2.5-flash': 'grok-4',
-      'gemini-1.5-pro': 'grok-4',
-      'gemini-1.5-flash': 'grok-4',
+      // Direct xAI model pass-through
+      'grok-4-0709': 'grok-4-0709',
+      'grok-4-0709-eu': 'grok-4-0709-eu',
+      'grok-3': 'grok-3',
+      'grok-3-fast': 'grok-3-fast',
+      'grok-3-mini': 'grok-3-mini',
+      'grok-3-mini-fast': 'grok-3-mini-fast',
+      'grok-2-1212': 'grok-2-1212',
+      'grok-2-vision-1212': 'grok-2-vision-1212',
+      'grok-code-fast-1': 'grok-code-fast-1',
+      'grok-2-image-1212': 'grok-2-image-1212',
+      
+      // Map Gemini models to appropriate Grok equivalents
+      'gemini-2.5-pro': 'grok-4-0709',
+      'gemini-2.5-flash': 'grok-3-fast',
+      'gemini-1.5-pro': 'grok-3',
+      'gemini-1.5-flash': 'grok-3-fast',
+      'gemini-1.5-flash-lite': 'grok-3-mini',
     };
 
-    return modelMap[geminiModel] || 'grok-4';
+    return modelMap[geminiModel] || 'grok-4-0709';
   }
 
   /**
@@ -281,7 +297,7 @@ export class GrokAdapter implements ContentGenerator {
    */
   async generateContent(
     request: GenerateContentParameters,
-    userPromptId: string,
+    _userPromptId: string,
   ): Promise<GenerateContentResponse> {
     try {
       const messages: OpenAI.ChatCompletionMessageParam[] = [];
@@ -369,7 +385,7 @@ export class GrokAdapter implements ContentGenerator {
                 index: 0,
                 safetyRatings: [],
               }],
-              modelVersion: 'grok-4',
+              modelVersion: modelName,
               usageMetadata: completion.usage ? {
                 promptTokenCount: completion.usage.prompt_tokens,
                 candidatesTokenCount: completion.usage.completion_tokens,
@@ -395,7 +411,8 @@ export class GrokAdapter implements ContentGenerator {
         if (completion.choices[0]?.message) {
           const response = this.convertOpenAIToGemini(
             completion.choices[0].message,
-            completion.choices[0].finish_reason || undefined
+            completion.choices[0].finish_reason || undefined,
+            modelName
           );
           
           // Add usage metadata if available
@@ -422,14 +439,14 @@ export class GrokAdapter implements ContentGenerator {
    */
   async generateContentStream(
     request: GenerateContentParameters,
-    userPromptId: string,
+    _userPromptId: string,
   ): Promise<AsyncGenerator<GenerateContentResponse>> {
-    return this.generateContentStreamInternal(request, userPromptId);
+    return this.generateContentStreamInternal(request, _userPromptId);
   }
 
   private async *generateContentStreamInternal(
     request: GenerateContentParameters,
-    userPromptId: string,
+    _userPromptId: string,
   ): AsyncGenerator<GenerateContentResponse> {
     try {
       const messages: OpenAI.ChatCompletionMessageParam[] = [];
@@ -512,7 +529,7 @@ export class GrokAdapter implements ContentGenerator {
                 index: 0,
                 safetyRatings: [],
               }],
-              modelVersion: 'grok-4',
+              modelVersion: modelName,
               usageMetadata: completion.usage ? {
                 promptTokenCount: completion.usage.prompt_tokens,
                 candidatesTokenCount: completion.usage.completion_tokens,
@@ -556,7 +573,7 @@ export class GrokAdapter implements ContentGenerator {
               index: 0,
               safetyRatings: [],
             }],
-            modelVersion: 'grok-4',
+            modelVersion: modelName,
           });
         }
 
@@ -600,7 +617,7 @@ export class GrokAdapter implements ContentGenerator {
               index: 0,
               safetyRatings: [],
             }],
-            modelVersion: 'grok-4',
+            modelVersion: modelName,
           });
           
           functionCallBuffer = null;
