@@ -504,14 +504,14 @@ export class GrokAdapter implements ContentGenerator {
           top_p: genConfig?.topP,
           stop: genConfig?.stopSequences,
           tools: [{
-            type: 'function',
+            type: 'function' as const,
             function: {
               name: functionName,
               description: 'Generate a JSON response matching the required schema',
               parameters: config.responseJsonSchema as any,
             },
           }],
-          tool_choice: { type: 'function', function: { name: functionName } },
+          tool_choice: { type: 'function' as const, function: { name: functionName } },
         });
 
         // Extract JSON from function call and yield as a single response
