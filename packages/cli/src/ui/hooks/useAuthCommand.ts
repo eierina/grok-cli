@@ -11,7 +11,6 @@ import {
   clearCachedCredentialFile,
   getErrorMessage,
 } from 'grok-cli-core';
-import { runExitCleanup } from '../../utils/cleanup.js';
 
 export const useAuthCommand = (
   settings: LoadedSettings,
@@ -56,20 +55,7 @@ export const useAuthCommand = (
         await clearCachedCredentialFile();
 
         settings.setValue(scope, 'security.auth.selectedType', authType);
-        if (
-          authType === AuthType.LOGIN_WITH_GOOGLE &&
-          config.isBrowserLaunchSuppressed()
-        ) {
-          runExitCleanup();
-          console.log(
-            `
-----------------------------------------------------------------
-Logging in with Google... Please restart Gemini CLI to continue.
-----------------------------------------------------------------
-            `,
-          );
-          process.exit(0);
-        }
+        // Grok API authentication doesn't require special browser handling
       }
       setIsAuthDialogOpen(false);
       setAuthError(null);

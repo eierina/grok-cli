@@ -6,7 +6,6 @@
 
 import type { Config } from 'grok-cli-core';
 import { AuthType } from 'grok-cli-core';
-import { USER_SETTINGS_PATH } from './config/settings.js';
 import { validateAuthMethod } from './config/auth.js';
 
 function getAuthTypeFromEnv(): AuthType | undefined {

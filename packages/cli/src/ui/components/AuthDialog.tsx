@@ -21,17 +21,6 @@ interface AuthDialogProps {
   initialErrorMessage?: string | null;
 }
 
-function parseDefaultAuthType(
-  defaultAuthType: string | undefined,
-): AuthType | null {
-  if (
-    defaultAuthType &&
-    Object.values(AuthType).includes(defaultAuthType as AuthType)
-  ) {
-    return defaultAuthType as AuthType;
-  }
-  return null;
-}
 
 export function AuthDialog({
   onSelect,
@@ -43,79 +32,20 @@ export function AuthDialog({
       return initialErrorMessage;
     }
 
-    const defaultAuthType = parseDefaultAuthType(
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'],
-    );
-
-    if (process.env['GEMINI_DEFAULT_AUTH_TYPE'] && defaultAuthType === null) {
-      return (
-        `Invalid value for GEMINI_DEFAULT_AUTH_TYPE: "${process.env['GEMINI_DEFAULT_AUTH_TYPE']}". ` +
-        `Valid values are: ${Object.values(AuthType).join(', ')}.`
-      );
-    }
-
-    if (
-      process.env['GEMINI_API_KEY'] &&
-      (!defaultAuthType || defaultAuthType === AuthType.USE_GEMINI)
-    ) {
-      return 'Existing API key detected (GEMINI_API_KEY). Select "Gemini API Key" option to use it.';
-    }
-    
-    if (
-      process.env['XAI_API_KEY'] &&
-      (!defaultAuthType || defaultAuthType === AuthType.USE_GROK)
-    ) {
-      return 'Existing xAI API key detected (XAI_API_KEY). Select "Use Grok API (xAI)" option to use it.';
+    if (process.env['GROK_API_KEY']) {
+      return 'Existing Grok API key detected (GROK_API_KEY). The Grok API authentication will be used.';
     }
     
     return null;
   });
   const items = [
     {
-      label: 'Login with Google',
-      value: AuthType.LOGIN_WITH_GOOGLE,
-    },
-    ...(process.env['CLOUD_SHELL'] === 'true'
-      ? [
-          {
-            label: 'Use Cloud Shell user credentials',
-            value: AuthType.CLOUD_SHELL,
-          },
-        ]
-      : []),
-    {
-      label: 'Use Gemini API Key',
-      value: AuthType.USE_GEMINI,
-    },
-    { label: 'Vertex AI', value: AuthType.USE_VERTEX_AI },
-    {
       label: 'Use Grok API (xAI)',
       value: AuthType.USE_GROK,
     },
   ];
 
-  const initialAuthIndex = items.findIndex((item) => {
-    if (settings.merged.security?.auth?.selectedType) {
-      return item.value === settings.merged.security.auth.selectedType;
-    }
-
-    const defaultAuthType = parseDefaultAuthType(
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'],
-    );
-    if (defaultAuthType) {
-      return item.value === defaultAuthType;
-    }
-
-    if (process.env['GEMINI_API_KEY']) {
-      return item.value === AuthType.USE_GEMINI;
-    }
-    
-    if (process.env['XAI_API_KEY']) {
-      return item.value === AuthType.USE_GROK;
-    }
-
-    return item.value === AuthType.LOGIN_WITH_GOOGLE;
-  });
+  const initialAuthIndex = 0; // Default to the only option: USE_GROK
 
   const handleAuthSelect = (authMethod: AuthType) => {
     const error = validateAuthMethod(authMethod);
@@ -176,13 +106,11 @@ export function AuthDialog({
         <Text color={Colors.Gray}>(Use Enter to select)</Text>
       </Box>
       <Box marginTop={1}>
-        <Text>Terms of Services and Privacy Notice for Gemini CLI</Text>
+        <Text>Terms of Service and Privacy Notice</Text>
       </Box>
       <Box marginTop={1}>
         <Text color={Colors.AccentBlue}>
-          {
-            'https://github.com/google-gemini/gemini-cli/blob/main/docs/tos-privacy.md'
-          }
+          Please see xAI's Terms of Service and Privacy Policy
         </Text>
       </Box>
     </Box>

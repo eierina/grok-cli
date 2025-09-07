@@ -17,8 +17,7 @@ describe('AuthDialog', () => {
 
   beforeEach(() => {
     originalEnv = { ...process.env };
-    process.env['GEMINI_API_KEY'] = '';
-    process.env['GEMINI_DEFAULT_AUTH_TYPE'] = '';
+    process.env['GROK_API_KEY'] = '';
     vi.clearAllMocks();
   });
 
@@ -27,7 +26,7 @@ describe('AuthDialog', () => {
   });
 
   it('should show an error if the initial auth type is invalid', () => {
-    process.env['GEMINI_API_KEY'] = '';
+    process.env['GROK_API_KEY'] = '';
 
     const settings: LoadedSettings = new LoadedSettings(
       {
@@ -42,7 +41,7 @@ describe('AuthDialog', () => {
         settings: {
           security: {
             auth: {
-              selectedType: AuthType.USE_GEMINI,
+              selectedType: AuthType.USE_GROK,
             },
           },
         },
@@ -61,18 +60,18 @@ describe('AuthDialog', () => {
       <AuthDialog
         onSelect={() => {}}
         settings={settings}
-        initialErrorMessage="GEMINI_API_KEY  environment variable not found"
+        initialErrorMessage="GROK_API_KEY environment variable not found"
       />,
     );
 
     expect(lastFrame()).toContain(
-      'GEMINI_API_KEY  environment variable not found',
+      'GROK_API_KEY environment variable not found',
     );
   });
 
-  describe('GEMINI_API_KEY environment variable', () => {
-    it('should detect GEMINI_API_KEY environment variable', () => {
-      process.env['GEMINI_API_KEY'] = 'foobar';
+  describe('GROK_API_KEY environment variable', () => {
+    it('should detect GROK_API_KEY environment variable', () => {
+      process.env['GROK_API_KEY'] = 'foobar';
 
       const settings: LoadedSettings = new LoadedSettings(
         {
@@ -105,14 +104,11 @@ describe('AuthDialog', () => {
       );
 
       expect(lastFrame()).toContain(
-        'Existing API key detected (GEMINI_API_KEY)',
+        'Existing Grok API key detected (GROK_API_KEY)',
       );
     });
 
-    it('should not show the GEMINI_API_KEY message if GEMINI_DEFAULT_AUTH_TYPE is set to something else', () => {
-      process.env['GEMINI_API_KEY'] = 'foobar';
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'] = AuthType.LOGIN_WITH_GOOGLE;
-
+    it('should show the default when no GROK_API_KEY is set', () => {
       const settings: LoadedSettings = new LoadedSettings(
         {
           settings: {
@@ -143,163 +139,8 @@ describe('AuthDialog', () => {
         <AuthDialog onSelect={() => {}} settings={settings} />,
       );
 
-      expect(lastFrame()).not.toContain(
-        'Existing API key detected (GEMINI_API_KEY)',
-      );
-    });
-
-    it('should show the GEMINI_API_KEY message if GEMINI_DEFAULT_AUTH_TYPE is set to use api key', () => {
-      process.env['GEMINI_API_KEY'] = 'foobar';
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'] = AuthType.USE_GEMINI;
-
-      const settings: LoadedSettings = new LoadedSettings(
-        {
-          settings: {
-            security: { auth: { selectedType: undefined } },
-            ui: { customThemes: {} },
-            mcpServers: {},
-          },
-          path: '',
-        },
-        {
-          settings: {},
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        [],
-        true,
-        new Set(),
-      );
-
-      const { lastFrame } = renderWithProviders(
-        <AuthDialog onSelect={() => {}} settings={settings} />,
-      );
-
-      expect(lastFrame()).toContain(
-        'Existing API key detected (GEMINI_API_KEY)',
-      );
-    });
-  });
-
-  describe('GEMINI_DEFAULT_AUTH_TYPE environment variable', () => {
-    it('should select the auth type specified by GEMINI_DEFAULT_AUTH_TYPE', () => {
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'] = AuthType.LOGIN_WITH_GOOGLE;
-
-      const settings: LoadedSettings = new LoadedSettings(
-        {
-          settings: {
-            security: { auth: { selectedType: undefined } },
-            ui: { customThemes: {} },
-            mcpServers: {},
-          },
-          path: '',
-        },
-        {
-          settings: {},
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        [],
-        true,
-        new Set(),
-      );
-
-      const { lastFrame } = renderWithProviders(
-        <AuthDialog onSelect={() => {}} settings={settings} />,
-      );
-
-      // This is a bit brittle, but it's the best way to check which item is selected.
-      expect(lastFrame()).toContain('● 1. Login with Google');
-    });
-
-    it('should fall back to default if GEMINI_DEFAULT_AUTH_TYPE is not set', () => {
-      const settings: LoadedSettings = new LoadedSettings(
-        {
-          settings: {
-            security: { auth: { selectedType: undefined } },
-            ui: { customThemes: {} },
-            mcpServers: {},
-          },
-          path: '',
-        },
-        {
-          settings: {},
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        [],
-        true,
-        new Set(),
-      );
-
-      const { lastFrame } = renderWithProviders(
-        <AuthDialog onSelect={() => {}} settings={settings} />,
-      );
-
-      // Default is LOGIN_WITH_GOOGLE
-      expect(lastFrame()).toContain('● 1. Login with Google');
-    });
-
-    it('should show an error and fall back to default if GEMINI_DEFAULT_AUTH_TYPE is invalid', () => {
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'] = 'invalid-auth-type';
-
-      const settings: LoadedSettings = new LoadedSettings(
-        {
-          settings: {
-            security: { auth: { selectedType: undefined } },
-            ui: { customThemes: {} },
-            mcpServers: {},
-          },
-          path: '',
-        },
-        {
-          settings: {},
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        {
-          settings: { ui: { customThemes: {} }, mcpServers: {} },
-          path: '',
-        },
-        [],
-        true,
-        new Set(),
-      );
-
-      const { lastFrame } = renderWithProviders(
-        <AuthDialog onSelect={() => {}} settings={settings} />,
-      );
-
-      expect(lastFrame()).toContain(
-        'Invalid value for GEMINI_DEFAULT_AUTH_TYPE: "invalid-auth-type"',
-      );
-
-      // Default is LOGIN_WITH_GOOGLE
-      expect(lastFrame()).toContain('● 1. Login with Google');
+      // Default is USE_GROK (the only option)
+      expect(lastFrame()).toContain('● 1. Use Grok API (xAI)');
     });
   });
 
@@ -409,7 +250,7 @@ describe('AuthDialog', () => {
       },
       {
         settings: {
-          security: { auth: { selectedType: AuthType.LOGIN_WITH_GOOGLE } },
+          security: { auth: { selectedType: AuthType.USE_GROK } },
           ui: { customThemes: {} },
           mcpServers: {},
         },

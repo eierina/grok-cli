@@ -7,8 +7,6 @@
 import { Box } from 'ink';
 import { type Config, AuthType } from 'grok-cli-core';
 import { GrokPrivacyNotice } from './GrokPrivacyNotice.js';
-import { CloudPaidPrivacyNotice } from './CloudPaidPrivacyNotice.js';
-import { CloudFreePrivacyNotice } from './CloudFreePrivacyNotice.js';
 
 interface PrivacyNoticeProps {
   onExit: () => void;
@@ -25,13 +23,9 @@ const PrivacyNoticeText = ({
   const authType = config.getContentGeneratorConfig()?.authType;
 
   switch (authType) {
-    case AuthType.USE_GEMINI:
-      return <GrokPrivacyNotice onExit={onExit} />;
-    case AuthType.USE_VERTEX_AI:
-      return <CloudPaidPrivacyNotice onExit={onExit} />;
-    case AuthType.LOGIN_WITH_GOOGLE:
+    case AuthType.USE_GROK:
     default:
-      return <CloudFreePrivacyNotice config={config} onExit={onExit} />;
+      return <GrokPrivacyNotice onExit={onExit} />;
   }
 };
 

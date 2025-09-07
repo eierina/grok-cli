@@ -30,7 +30,6 @@ import {
   sessionId,
   logUserPrompt,
   AuthType,
-  getOauthClient,
   logIdeConnection,
   IdeConnectionEvent,
   IdeConnectionType,
@@ -219,13 +218,11 @@ export async function main() {
 
   // Set a default auth type if one isn't set.
   if (!settings.merged.security?.auth?.selectedType) {
-    if (process.env['CLOUD_SHELL'] === 'true') {
-      settings.setValue(
-        SettingScope.User,
-        'selectedAuthType',
-        AuthType.CLOUD_SHELL,
-      );
-    }
+    settings.setValue(
+      SettingScope.User,
+      'selectedAuthType',
+      AuthType.USE_GROK,
+    );
   }
   // Empty key causes issues with the GoogleGenAI package.
   if (process.env['GEMINI_API_KEY']?.trim() === '') {
@@ -323,14 +320,7 @@ export async function main() {
     }
   }
 
-  if (
-    settings.merged.security?.auth?.selectedType ===
-      AuthType.LOGIN_WITH_GOOGLE &&
-    config.isBrowserLaunchSuppressed()
-  ) {
-    // Do oauth before app renders to make copying the link possible.
-    await getOauthClient(settings.merged.security.auth.selectedType, config);
-  }
+  // Note: Grok authentication doesn't require OAuth flow like Google
 
   if (config.getExperimentalZedIntegration()) {
     return runZedIntegration(config, settings, extensions, argv);
