@@ -125,7 +125,7 @@ export async function checkNextSpeaker(
     return null;
   } catch (error) {
     console.warn(
-      'Failed to talk to Gemini endpoint when seeing if conversation should continue.',
+      'Failed to talk to Grok endpoint when seeing if conversation should continue.',
       error,
     );
     return null;
