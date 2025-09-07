@@ -1,15 +1,29 @@
 {
   "name": "grok-cli",
   "version": "1.0.0",
-  "description": "Grok CLI",
+  "description": "A command-line interface for interacting with xAI's Grok models",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/eierina/grok-cli.git"
   },
+  "bugs": {
+    "url": "https://github.com/eierina/grok-cli/issues"
+  },
+  "homepage": "https://github.com/eierina/grok-cli#readme",
+  "author": "Edoardo Ierina",
+  "keywords": [
+    "grok",
+    "xai",
+    "ai",
+    "cli",
+    "terminal",
+    "assistant",
+    "chatbot"
+  ],
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini": "dist/index.js"
+    "grok": "dist/index.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
